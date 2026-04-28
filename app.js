@@ -5,6 +5,18 @@ let timerInterval = null;
 let remaining = 0;
 let total = 0;
 
+const sageImages = {
+  home: "assets/sage/idle.png",
+  plan: "assets/sage/idle.png",
+  breath: "assets/sage/breath.png",
+  lift: "assets/sage/lift-flow.png",
+  flow: "assets/sage/flowing-arms.png",
+  gather: "assets/sage/gather-qi.png",
+  stillness: "assets/sage/stillness.png",
+  closing: "assets/sage/closing.png",
+  bow: "assets/sage/bow.png"
+};
+
 const stages = [
   {
     title: "Awakening Breath",
