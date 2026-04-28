@@ -1,50 +1,55 @@
-# Stillwater Sensei v16.1
+# Stillwater Sensei v16.2
 
-Stillwater Sensei is an open-source, browser-based Chair Tai Chi + Qigong guided practice app led by Sage, a calm 2D panda guide.
+Open-source, browser-based Chair Tai Chi + Qigong guided practice led by Sage the Stillwater Sensei, a calm 2D panda guide.
 
-## v16.1 updates
+## What changed in v16.2
 
-- Added four audio modes:
-  - Play Voice + Music
-  - Voice Only
-  - Music Only
-  - Silence
-- Voice now tries local MP3 files first.
-- If local voice MP3 files are missing, voice falls back to built-in browser speech synthesis.
-- Added right-side Resources panel to balance the Stillwater Path panel.
-- Added `history.html` with a quick overview of Tai Chi and Qigong.
-- Bumped cache versions to `v=16.1` for CSS, JS, images, and page links.
+- Added remembered audio preferences using `localStorage`.
+- Default audio mode is now **Play Voice + Music**.
+- Added Browser Voice selector to the main app and history page.
+- Default browser voice target is Microsoft Zira when available.
+- Default levels match the preferred test settings: slower voice, raised pitch, medium voice volume, low music volume.
+- Sound & Voice settings are collapsed on entry and open only when clicked.
+- Added calming Sage breathing scale animation and soft water ripple effect.
+- Tightened layout so the opening screen fits better inside a browser window.
+- Top-left Stillwater logo now links back to the opening screen.
+- Cache-busting bumped to `v=16.2`.
 
-## Required / expected music files
+## Expected audio files
 
-Place in `assets/audio/`:
+Place local music MP3 files here:
 
-- `breath.mp3`
-- `flow.mp3`
-- `stillness.mp3`
-- `closing.mp3`
+```text
+assets/audio/breath.mp3
+assets/audio/flow.mp3
+assets/audio/stillness.mp3
+assets/audio/closing.mp3
+```
 
-## Optional local voice files
+Place optional local Sage voice MP3 files here:
 
-Place in `assets/voice/`:
+```text
+assets/voice/01-awakening-breath.mp3
+assets/voice/02-lift-flow.mp3
+assets/voice/03-flowing-arms.mp3
+assets/voice/04-gather-qi.mp3
+assets/voice/05-stillness.mp3
+assets/voice/06-closing.mp3
+assets/voice/07-final-bow.mp3
+```
 
-- `01-awakening-breath.mp3`
-- `02-lift-flow.mp3`
-- `03-flowing-arms.mp3`
-- `04-gather-qi.mp3`
-- `05-stillness.mp3`
-- `06-closing.mp3`
-- `07-final-bow.mp3`
+If voice MP3 files are missing, the app falls back to the selected built-in browser voice.
 
-If these are missing, the app uses browser speech synthesis as a temporary fallback.
+## Upload to GitHub Pages
 
-## GitHub Pages testing
+Replace the repository files with this bundle, keeping the same folder structure.
 
-After upload, test with cache-busting URLs:
+Test with:
 
-- `https://stillwatersensei.github.io/?v=16.1`
-- `https://stillwatersensei.github.io/app.js?v=16.1`
-- `https://stillwatersensei.github.io/style.css?v=16.1`
-- `https://stillwatersensei.github.io/history.html?v=16.1`
+```text
+https://stillwatersensei.github.io/?v=16.2
+https://stillwatersensei.github.io/app.js?v=16.2
+https://stillwatersensei.github.io/style.css?v=16.2
+```
 
 Created by David Fliesen in 2026.

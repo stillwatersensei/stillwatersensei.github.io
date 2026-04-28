@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stillwater Voice Test v16</title>
-  <link rel="stylesheet" href="style.css?v=16" />
+  <title>Stillwater Voice Test v16.2</title>
+  <link rel="stylesheet" href="style.css?v=16.2" />
   <style>
     .test-wrap { max-width: 760px; margin: 24px auto; background: var(--card); border: 1px solid var(--line); border-radius: 28px; padding: 24px; box-shadow: var(--shadow); }
     textarea, select { width: 100%; border: 1px solid var(--line); border-radius: 16px; padding: 12px; color: var(--ink); background: rgba(255,255,255,0.72); }
@@ -15,24 +15,24 @@
 <body>
   <div class="app-shell">
     <header class="hero">
-      <div class="brand-lockup">
+      <a class="brand-lockup brand-link" href="index.html?v=16.2" aria-label="Return to Stillwater opening screen">
         <div class="still-point"><span></span></div>
         <div><h1>Voice Test</h1><p>Browser SpeechSynthesis sandbox</p></div>
-      </div>
-      <a class="ghost-button" href="index.html?v=16">Back to app</a>
+      </a>
+      <a class="ghost-button" href="index.html?v=16.2">Back to app</a>
     </header>
 
     <main class="test-wrap stack">
-      <p class="hint">Browser voices vary by device. This page is for testing only. The main v16 app is built to prefer real local Sage voice MP3 files.</p>
+      <p class="hint">Browser voices vary by device. This page is for testing only. The main v16.2 app is built to prefer real local Sage voice MP3 files.</p>
       <label>Voice
         <select id="voiceSelect"></select>
       </label>
       <label>Test line
         <textarea id="voiceText">Welcome to Stillwater. Sit comfortably, soften your shoulders, and let the breath become calm.</textarea>
       </label>
-      <div class="slider-row"><label for="rate">Speed</label><input id="rate" type="range" min="0.6" max="1.2" step="0.05" value="0.86" /></div>
-      <div class="slider-row"><label for="pitch">Pitch</label><input id="pitch" type="range" min="0.7" max="1.3" step="0.05" value="0.95" /></div>
-      <div class="slider-row"><label for="volume">Volume</label><input id="volume" type="range" min="0" max="1" step="0.01" value="0.9" /></div>
+      <div class="slider-row"><label for="rate">Speed</label><input id="rate" type="range" min="0.6" max="1.2" step="0.05" value="0.72" /></div>
+      <div class="slider-row"><label for="pitch">Pitch</label><input id="pitch" type="range" min="0.7" max="1.3" step="0.05" value="1.08" /></div>
+      <div class="slider-row"><label for="volume">Volume</label><input id="volume" type="range" min="0" max="1" step="0.01" value="0.70" /></div>
       <div class="controls"><button id="speak" class="primary" type="button">Speak</button><button id="stop" type="button">Stop</button></div>
     </main>
   </div>
