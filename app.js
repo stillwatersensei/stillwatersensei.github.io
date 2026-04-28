@@ -54,9 +54,25 @@ function home() {
 
   screen.innerHTML = `
     <h1>🌊 Stillwater</h1>
-    <img src="assets/sage/idle.png" class="sage-img" alt="Sage idle">
+    <img src="assets/sage/idle.png" class="sage-img" alt="Sage the Stillwater Sensei">
     <p class="prompt">Come as you are.</p>
-    <button onclick="start()">Begin</button>
+    <button onclick="showPlan()">Begin</button>
+    <p class="small">Guided by Sage the Stillwater Sensei</p>
+  `;
+}
+
+function showPlan() {
+  clearInterval(timer);
+
+  const list = stages.map(stage => `<li>${stage.title}</li>`).join("");
+
+  screen.innerHTML = `
+    <h2>Today’s Path</h2>
+    <img src="assets/sage/idle.png" class="sage-img" alt="Sage preparing the session">
+    <p class="prompt">A gentle seated practice is ready.</p>
+    <ol class="stage-list">${list}</ol>
+    <button onclick="start()">Begin Session</button>
+    <button class="secondary" onclick="home()">Return</button>
   `;
 }
 
@@ -77,19 +93,72 @@ function runStage() {
   remaining = s.time;
 
   screen.innerHTML = `
+    <div class="stage-count">Stage ${stageIndex + 1} of ${stages.length}</div>
     <h2>${s.title}</h2>
     <img src="${s.image}" class="sage-img" alt="${s.title}">
     <p class="prompt">${s.text}</p>
     <div class="timer" id="t">${format(remaining)}</div>
-    <button onclick="next()">Next</button>
+    <button onclick="pause()">Pause</button>
+    <button class="secondary" onclick="next()">Next</button>
     <button class="secondary" onclick="home()">End</button>
   `;
 
   timer = setInterval(() => {
     remaining--;
-    document.getElementById("t").textContent = format(remaining);
 
-    if (remaining <= 0) next();
+    const timerDisplay = document.getElementById("t");
+    if (timerDisplay) {
+      timerDisplay.textContent = format(remaining);
+    }
+
+    if (remaining <= 0) {
+      clearInterval(timer);
+      setTimeout(next, 1500);
+    }
+  }, 1000);
+}
+
+function pause() {
+  clearInterval(timer);
+
+  const s = stages[stageIndex];
+
+  screen.innerHTML = `
+    <h2>Paused</h2>
+    <img src="${s.image}" class="sage-img" alt="${s.title}">
+    <p class="prompt">Stillness is part of the practice.</p>
+    <div class="timer">${format(remaining)}</div>
+    <button onclick="resume()">Resume</button>
+    <button class="secondary" onclick="home()">End Session</button>
+  `;
+}
+
+function resume() {
+  const s = stages[stageIndex];
+
+  screen.innerHTML = `
+    <div class="stage-count">Stage ${stageIndex + 1} of ${stages.length}</div>
+    <h2>${s.title}</h2>
+    <img src="${s.image}" class="sage-img" alt="${s.title}">
+    <p class="prompt">${s.text}</p>
+    <div class="timer" id="t">${format(remaining)}</div>
+    <button onclick="pause()">Pause</button>
+    <button class="secondary" onclick="next()">Next</button>
+    <button class="secondary" onclick="home()">End</button>
+  `;
+
+  timer = setInterval(() => {
+    remaining--;
+
+    const timerDisplay = document.getElementById("t");
+    if (timerDisplay) {
+      timerDisplay.textContent = format(remaining);
+    }
+
+    if (remaining <= 0) {
+      clearInterval(timer);
+      setTimeout(next, 1500);
+    }
   }, 1000);
 }
 
@@ -103,9 +172,9 @@ function complete() {
 
   screen.innerHTML = `
     <h2>Session Complete</h2>
-    <img src="assets/sage/bow.png" class="sage-img" alt="Sage bow">
-    <p class="prompt">You have returned to stillness.</p>
-    <button onclick="home()">Restart</button>
+    <img src="assets/sage/bow.png" class="sage-img" alt="Sage final bow">
+    <p class="prompt">You arrived.<br>You moved.<br>You return.</p>
+    <button onclick="home()">Return Home</button>
   `;
 }
 
