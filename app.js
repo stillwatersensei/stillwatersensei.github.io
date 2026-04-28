@@ -1,173 +1,101 @@
 const screen = document.getElementById("screen");
 
-let currentStage = 0;
-let timerInterval = null;
+let stageIndex = 0;
+let timer = null;
 let remaining = 0;
-let total = 0;
-
-const sageImages = {
-  home: "assets/sage/idle.png",
-  plan: "assets/sage/idle.png",
-  breath: "assets/sage/breath.png",
-  lift: "assets/sage/lift-flow.png",
-  flow: "assets/sage/flowing-arms.png",
-  gather: "assets/sage/gather-qi.png",
-  stillness: "assets/sage/stillness.png",
-  closing: "assets/sage/closing.png",
-  bow: "assets/sage/bow.png"
-};
 
 const stages = [
   {
     title: "Awakening Breath",
-    duration: 180,
-    sage: "Let the breath rise and fall. There is no rush here.",
-    instruction: "Sit tall. Feet grounded. Inhale as your hands rise. Exhale as they settle."
+    image: "assets/sage/breath.png",
+    time: 180,
+    text: "Let the breath rise and fall."
   },
   {
-    title: "Flow Practice",
-    duration: 240,
-    sage: "Move as water, not as effort.",
-    instruction: "Slowly guide your hands side to side. Keep the shoulders soft and the breath steady."
+    title: "Lift & Flow",
+    image: "assets/sage/lift-flow.png",
+    time: 180,
+    text: "Gently lift the hands."
   },
   {
-    title: "Return to Stillness",
-    duration: 90,
-    sage: "Pause and listen.",
-    instruction: "Rest your hands. Notice your breath. Let the body soften."
+    title: "Flowing Arms",
+    image: "assets/sage/flowing-arms.png",
+    time: 240,
+    text: "Move as water."
   },
   {
-    title: "Deep Flow",
-    duration: 180,
-    sage: "Let still water move through peaceful motion.",
-    instruction: "Raise, open, turn, and return. Keep the movement smooth and small."
+    title: "Gather Qi",
+    image: "assets/sage/gather-qi.png",
+    time: 120,
+    text: "Bring energy inward."
   },
   {
-    title: "Closing Stillness",
-    duration: 120,
-    sage: "The stillness remains when you rise.",
-    instruction: "Hands resting. Slow breathing. Let the session settle."
+    title: "Stillness",
+    image: "assets/sage/stillness.png",
+    time: 90,
+    text: "Pause and soften."
+  },
+  {
+    title: "Closing",
+    image: "assets/sage/closing.png",
+    time: 120,
+    text: "Complete the practice."
+  },
+  {
+    title: "Final Bow",
+    image: "assets/sage/bow.png",
+    time: 60,
+    text: "Strength and stillness in balance."
   }
 ];
 
-function showHome() {
-  clearInterval(timerInterval);
-  screen.innerHTML = `
-    <h1>🌊 Stillwater</h1>
-    <div class="sage">🐼</div>
-    <p class="prompt">Welcome to Stillwater.<br>Come as you are.</p>
-    <button onclick="showSessionPlan()">Begin</button>
-    <p class="small">Guided by Sage the Stillwater Sensei</p>
-  `;
+function home() {
+  clearInterval(timer);
+
+  screen.innerHTML =     <h1>🌊 Stillwater</h1>     <img src="assets/sage/idle.png" class="sage-img">     <p class="prompt">Come as you are.</p>     <button onclick="start()">Begin</button>  ;
 }
 
-function showSessionPlan() {
-  const list = stages.map(stage => `<li>${stage.title}</li>`).join("");
-
-  screen.innerHTML = `
-    <h2>Today’s Path</h2>
-    <div class="sage">🐼</div>
-    <p class="prompt">Sage has prepared a gentle seated practice.</p>
-    <ol class="stage-list">${list}</ol>
-    <button onclick="startStage(0)">Begin Session</button>
-    <button class="secondary" onclick="showHome()">Return</button>
-  `;
+function start() {
+  stageIndex = 0;
+  runStage();
 }
 
-function startStage(index) {
-  clearInterval(timerInterval);
+function runStage() {
+  clearInterval(timer);
 
-  currentStage = index;
-
-  if (currentStage >= stages.length) {
-    showComplete();
+  if (stageIndex >= stages.length) {
+    complete();
     return;
   }
 
-  const stage = stages[currentStage];
-  remaining = stage.duration;
-  total = stage.duration;
+  const s = stages[stageIndex];
+  remaining = s.time;
 
-  renderStage(stage);
-  timerInterval = setInterval(updateTimer, 1000);
+  screen.innerHTML =     <h2>${s.title}</h2>     <img src="${s.image}" class="sage-img">     <p class="prompt">${s.text}</p>     <div class="timer" id="t">${format(remaining)}</div>     <button onclick="next()">Next</button>     <button class="secondary" onclick="home()">End</button>  ;
+
+  timer = setInterval(() => {
+    remaining--;
+    document.getElementById("t").textContent = format(remaining);
+
+    if (remaining <= 0) next();
+  }, 1000);
 }
 
-function renderStage(stage) {
-  screen.innerHTML = `
-    <h2>${stage.title}</h2>
-    <div class="sage">🐼</div>
-    <p class="prompt">“${stage.sage}”</p>
-    <p>${stage.instruction}</p>
-
-    <div class="timer" id="timer">${formatTime(remaining)}</div>
-
-    <div class="progress-wrap">
-      <div class="progress" id="progress"></div>
-    </div>
-
-    <div class="footer-controls">
-      <button onclick="pauseTimer()">Pause</button>
-      <button class="secondary" onclick="startStage(currentStage + 1)">Next</button>
-      <button class="secondary" onclick="showHome()">End</button>
-    </div>
-  `;
+function next() {
+  stageIndex++;
+  runStage();
 }
 
-function updateTimer() {
-  remaining--;
+function complete() {
+  clearInterval(timer);
 
-  const timer = document.getElementById("timer");
-  const progress = document.getElementById("progress");
-
-  if (timer) timer.textContent = formatTime(remaining);
-
-  if (progress) {
-    const percent = ((total - remaining) / total) * 100;
-    progress.style.width = `${percent}%`;
-  }
-
-  if (remaining <= 0) {
-    startStage(currentStage + 1);
-  }
+  screen.innerHTML =     <h2>Session Complete</h2>     <img src="assets/sage/bow.png" class="sage-img">     <p class="prompt">You have returned to stillness.</p>     <button onclick="home()">Restart</button>  ;
 }
 
-function pauseTimer() {
-  clearInterval(timerInterval);
-
-  const stage = stages[currentStage];
-
-  screen.innerHTML = `
-    <h2>Paused</h2>
-    <div class="sage">🐼</div>
-    <p class="prompt">Stillness is part of the practice.</p>
-    <p>${stage.title} has ${formatTime(remaining)} remaining.</p>
-    <button onclick="resumeTimer()">Resume</button>
-    <button class="secondary" onclick="showHome()">End Session</button>
-  `;
+function format(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return m + ":" + sec.toString().padStart(2, "0");
 }
 
-function resumeTimer() {
-  const stage = stages[currentStage];
-  renderStage(stage);
-  timerInterval = setInterval(updateTimer, 1000);
-}
-
-function showComplete() {
-  clearInterval(timerInterval);
-
-  screen.innerHTML = `
-    <h2>Session Complete</h2>
-    <div class="sage">🐼</div>
-    <p class="prompt">You arrived.<br>You moved.<br>You return.</p>
-    <p class="small">Stillwater is here when you need it.</p>
-    <button onclick="showHome()">Return Home</button>
-  `;
-}
-
-function formatTime(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
-showHome();
+home();
