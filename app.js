@@ -112,26 +112,28 @@ function runStage() {
     <button class="secondary" onclick="home()">End</button>
   `;
 
-  timer = setInterval(() => {
-    remaining--;
+  timer = setInterval(updateStageTimer, 1000);
+}
 
-    const timerDisplay = document.getElementById("t");
-    const progress = document.getElementById("progress");
+function updateStageTimer() {
+  remaining--;
 
-    if (timerDisplay) {
-      timerDisplay.textContent = format(remaining);
-    }
+  const timerDisplay = document.getElementById("t");
+  const progress = document.getElementById("progress");
 
-    if (progress) {
-      const percent = ((currentStageTime - remaining) / currentStageTime) * 100;
-      progress.style.width = `${percent}%`;
-    }
+  if (timerDisplay) {
+    timerDisplay.textContent = format(remaining);
+  }
 
-    if (remaining <= 0) {
-      clearInterval(timer);
-      setTimeout(next, 1500);
-    }
-  }, 1000);
+  if (progress) {
+    const percent = ((currentStageTime - remaining) / currentStageTime) * 100;
+    progress.style.width = `${percent}%`;
+  }
+
+  if (remaining <= 0) {
+    clearInterval(timer);
+    setTimeout(next, 1500);
+  }
 }
 
 function pause() {
@@ -151,6 +153,7 @@ function pause() {
 
 function resume() {
   const s = stages[stageIndex];
+  const percent = ((currentStageTime - remaining) / currentStageTime) * 100;
 
   screen.innerHTML = `
     <div class="stage-count">Stage ${stageIndex + 1} of ${stages.length}</div>
@@ -163,33 +166,14 @@ function resume() {
     <div class="timer" id="t">${format(remaining)}</div>
 
     <div class="progress-track">
-      <div class="progress-fill" id="progress" style="width:${((currentStageTime - remaining) / currentStageTime) * 100}%"></div>
+      <div class="progress-fill" id="progress" style="width:${percent}%"></div>
     </div>
 
     <button onclick="pause()">Pause</button>
     <button class="secondary" onclick="home()">End</button>
   `;
 
-  timer = setInterval(() => {
-    remaining--;
-
-    const timerDisplay = document.getElementById("t");
-    const progress = document.getElementById("progress");
-
-    if (timerDisplay) {
-      timerDisplay.textContent = format(remaining);
-    }
-
-    if (progress) {
-      const percent = ((currentStageTime - remaining) / currentStageTime) * 100;
-      progress.style.width = `${percent}%`;
-    }
-
-    if (remaining <= 0) {
-      clearInterval(timer);
-      setTimeout(next, 1500);
-    }
-  }, 1000);
+  timer = setInterval(updateStageTimer, 1000);
 }
 
 function next() {
@@ -222,8 +206,9 @@ function buildCompleteDots() {
 }
 
 function format(s) {
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
+  const safeSeconds = Math.max(0, s);
+  const m = Math.floor(safeSeconds / 60);
+  const sec = safeSeconds % 60;
   return m + ":" + sec.toString().padStart(2, "0");
 }
 
