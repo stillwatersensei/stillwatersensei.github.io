@@ -2,323 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stillwater Voice Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stillwater Voice Test (MP3)</title>
   <style>
-    :root {
-      --deep: #0f2f2f;
-      --water: #1f5f5b;
-      --light: #e8f5f2;
-      --accent: #d8c7a1;
-      --aqua: #6fd3c8;
-      --panel: rgba(255,255,255,0.08);
-    }
-
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      min-height: 100vh;
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, var(--water), var(--deep));
-      color: var(--light);
+      background: #1f5f5b;
+      color: #e8f5f2;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 18px;
+      min-height: 100vh;
     }
-
     .card {
-      width: 100%;
-      max-width: 520px;
-      border-radius: 28px;
-      background: var(--panel);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-      padding: 28px;
+      background: rgba(0,0,0,0.25);
+      padding: 24px;
+      border-radius: 20px;
+      max-width: 500px;
       text-align: center;
     }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .brand-mark {
-      width: 42px;
-      height: 42px;
-      border: 2px solid rgba(232,245,242,0.82);
-      border-radius: 50%;
-      position: relative;
-      box-shadow: 0 0 18px rgba(216,199,161,0.16);
-    }
-
-    .brand-mark::after {
-      content: "";
-      width: 10px;
-      height: 10px;
-      background: var(--accent);
-      border-radius: 50%;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-      letter-spacing: 0.05em;
-    }
-
-    h2 {
-      color: var(--accent);
-      margin-top: 22px;
-    }
-
-    p {
-      line-height: 1.5;
-    }
-
     textarea {
       width: 100%;
-      min-height: 120px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.08);
-      color: var(--light);
-      padding: 14px;
-      font-size: 1rem;
-      resize: vertical;
+      height: 100px;
+      margin: 10px 0;
     }
-
-    select, input {
-      width: 100%;
-      margin: 8px 0 16px;
-      padding: 10px;
-      border-radius: 14px;
-      border: none;
-      font-size: 1rem;
-    }
-
-    label {
-      display: block;
-      text-align: left;
-      margin-top: 12px;
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-
     button {
+      margin: 6px;
+      padding: 10px 16px;
+      border-radius: 20px;
       border: none;
-      border-radius: 30px;
-      padding: 13px 20px;
-      margin: 7px;
-      font-size: 1rem;
+      background: #6fd3c8;
       cursor: pointer;
-      background: var(--aqua);
-      color: var(--deep);
       font-weight: bold;
-    }
-
-    button.secondary {
-      background: transparent;
-      border: 1px solid var(--light);
-      color: var(--light);
-    }
-
-    .status {
-      margin-top: 12px;
-      color: var(--accent);
-      font-size: 0.95rem;
-    }
-
-    .note {
-      font-size: 0.9rem;
-      opacity: 0.82;
     }
   </style>
 </head>
-
 <body>
-  <main class="card">
-    <div class="brand">
-      <div class="brand-mark"></div>
-      <h1>Stillwater</h1>
-    </div>
+  <div class="card">
+    <h1>Stillwater Voice + Music Test</h1>
 
-    <p class="note">
-      Voice + ambient music test using your browser’s built-in speech voice.
-    </p>
-
-    <h2>Sage Voice Line</h2>
-
-    <textarea id="voiceText">Let the breath rise and fall. Sit tall with both feet grounded. Inhale gently as the hands float up. Exhale as they settle back down.</textarea>
-
-    <label for="voiceSelect">Browser Voice</label>
-    <select id="voiceSelect"></select>
-
-    <label for="rate">Voice Speed</label>
-    <input id="rate" type="range" min="0.6" max="1.1" step="0.05" value="0.82">
-
-    <label for="pitch">Voice Pitch</label>
-    <input id="pitch" type="range" min="0.7" max="1.2" step="0.05" value="0.88">
-
-    <label for="volume">Voice Volume</label>
-    <input id="volume" type="range" min="0.1" max="1" step="0.05" value="0.9">
+    <textarea id="text">
+Let the breath rise and fall. Sit tall with both feet grounded.
+    </textarea>
 
     <div>
-      <button onclick="playTest()">Play Voice + Music</button>
-      <button class="secondary" onclick="speakOnly()">Voice Only</button>
-      <button class="secondary" onclick="toggleMusic()">Music Only</button>
-      <button class="secondary" onclick="stopAll()">Stop</button>
+      <button onclick="playBoth()">Voice + Music</button>
+      <button onclick="voiceOnly()">Voice Only</button>
+      <button onclick="musicOnly()">Music Only</button>
+      <button onclick="stopAll()">Stop</button>
     </div>
 
-    <p id="status" class="status">Ready.</p>
-    <p class="note">
-      Browser voices vary by device. iPad, Safari, Chrome, and Windows may all sound different.
-    </p>
-  </main>
+    <p id="status">Ready</p>
+  </div>
 
-  <script>
-    const voiceSelect = document.getElementById("voiceSelect");
-    const statusText = document.getElementById("status");
+<script>
+let audio = new Audio("assets/audio/closing.mp3");
+audio.loop = true;
+audio.volume = 0.5;
 
-    let voices = [];
-    let audioContext = null;
-    let musicNodes = [];
-    let musicOn = false;
+function playBoth(){
+  audio.play().catch(()=>{});
+  speak();
+}
 
-    function loadVoices() {
-      voices = window.speechSynthesis.getVoices();
-      voiceSelect.innerHTML = "";
+function voiceOnly(){
+  stopMusic();
+  speak();
+}
 
-      voices.forEach((voice, index) => {
-        const option = document.createElement("option");
-        option.value = index;
-        option.textContent = `${voice.name} (${voice.lang})`;
-        voiceSelect.appendChild(option);
-      });
+function musicOnly(){
+  stopVoice();
+  audio.play().catch(()=>{});
+}
 
-      const preferredIndex = voices.findIndex(v =>
-        v.lang.startsWith("en") &&
-        (
-          v.name.toLowerCase().includes("samantha") ||
-          v.name.toLowerCase().includes("daniel") ||
-          v.name.toLowerCase().includes("google") ||
-          v.name.toLowerCase().includes("microsoft")
-        )
-      );
+function speak(){
+  const utter = new SpeechSynthesisUtterance(
+    document.getElementById("text").value
+  );
+  utter.rate = 0.85;
+  utter.pitch = 0.9;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
 
-      if (preferredIndex >= 0) {
-        voiceSelect.value = preferredIndex;
-      }
-    }
+function stopMusic(){
+  audio.pause();
+  audio.currentTime = 0;
+}
 
-    if ("speechSynthesis" in window) {
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    } else {
-      statusText.textContent = "Speech synthesis is not supported in this browser.";
-    }
+function stopVoice(){
+  speechSynthesis.cancel();
+}
 
-    function playTest() {
-      startMusic();
-      setTimeout(speakOnly, 500);
-    }
-
-    function speakOnly() {
-      if (!("speechSynthesis" in window)) {
-        statusText.textContent = "Speech synthesis is not supported in this browser.";
-        return;
-      }
-
-      window.speechSynthesis.cancel();
-
-      const text = document.getElementById("voiceText").value;
-      const utterance = new SpeechSynthesisUtterance(text);
-
-      const selectedVoice = voices[voiceSelect.value];
-      if (selectedVoice) utterance.voice = selectedVoice;
-
-      utterance.rate = parseFloat(document.getElementById("rate").value);
-      utterance.pitch = parseFloat(document.getElementById("pitch").value);
-      utterance.volume = parseFloat(document.getElementById("volume").value);
-
-      utterance.onstart = () => statusText.textContent = "Sage is speaking...";
-      utterance.onend = () => statusText.textContent = musicOn ? "Voice finished. Music continues." : "Voice finished.";
-
-      window.speechSynthesis.speak(utterance);
-    }
-
-    function toggleMusic() {
-      if (musicOn) {
-        stopMusic();
-      } else {
-        startMusic();
-      }
-    }
-
-    function startMusic() {
-      if (musicOn) return;
-
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-      const master = audioContext.createGain();
-      master.gain.value = 0.04;
-      master.connect(audioContext.destination);
-
-      const notes = [98, 146.83, 196];
-
-      notes.forEach((freq, index) => {
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-
-        osc.type = "sine";
-        osc.frequency.value = freq;
-
-        gain.gain.setValueAtTime(0.0, audioContext.currentTime);
-        gain.gain.linearRampToValueAtTime(index === 0 ? 0.26 : 0.12, audioContext.currentTime + 2.5);
-
-        osc.connect(gain);
-        gain.connect(master);
-        osc.start();
-
-        musicNodes.push(osc, gain);
-      });
-
-      musicOn = true;
-      statusText.textContent = "Ambient music is on.";
-    }
-
-    function stopMusic() {
-      musicNodes.forEach(node => {
-        try {
-          if (node.stop) node.stop();
-          if (node.disconnect) node.disconnect();
-        } catch (e) {}
-      });
-
-      musicNodes = [];
-
-      if (audioContext) {
-        try { audioContext.close(); } catch (e) {}
-      }
-
-      audioContext = null;
-      musicOn = false;
-      statusText.textContent = "Ambient music stopped.";
-    }
-
-    function stopAll() {
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
-      stopMusic();
-      statusText.textContent = "Stopped.";
-    }
-  </script>
+function stopAll(){
+  stopMusic();
+  stopVoice();
+}
+</script>
 </body>
 </html>
