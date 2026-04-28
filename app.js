@@ -8,14 +8,23 @@ let timer = null;
 let remaining = 0;
 let currentStageTime = 0;
 
-let audioContext = null;
-let audioNodes = [];
-let ambientOn = false;
+let musicOn = false;
+let audio = new Audio();
+audio.loop = true;
+audio.volume = 0.55;
+
+const musicFiles = {
+  breath: "assets/audio/breath.mp3",
+  flow: "assets/audio/flow.mp3",
+  stillness: "assets/audio/stillness.mp3",
+  closing: "assets/audio/closing.mp3"
+};
 
 const stages = [
   {
     title: "Awakening Breath",
     image: "assets/sage/breath.png",
+    music: musicFiles.breath,
     time: 45,
     text: "Let the breath rise and fall.",
     guidance: "Sit tall with both feet grounded. Inhale gently as the hands float up. Exhale as they settle back down."
@@ -23,6 +32,7 @@ const stages = [
   {
     title: "Lift & Flow",
     image: "assets/sage/lift-flow.png",
+    music: musicFiles.breath,
     time: 45,
     text: "Gently lift the hands.",
     guidance: "Raise both hands slowly as if lifting warm water. Keep the shoulders soft. Let the breath lead the motion."
@@ -30,6 +40,7 @@ const stages = [
   {
     title: "Flowing Arms",
     image: "assets/sage/flowing-arms.png",
+    music: musicFiles.flow,
     time: 60,
     text: "Move as water.",
     guidance: "Guide one hand outward while the other hand returns inward. Move slowly, smoothly, and without strain."
@@ -37,6 +48,7 @@ const stages = [
   {
     title: "Gather Qi",
     image: "assets/sage/gather-qi.png",
+    music: musicFiles.flow,
     time: 45,
     text: "Bring energy inward.",
     guidance: "Draw the hands toward the lower belly. Imagine gathering calm into your center. Let the elbows relax downward."
@@ -44,6 +56,7 @@ const stages = [
   {
     title: "Stillness",
     image: "assets/sage/stillness.png",
+    music: musicFiles.stillness,
     time: 30,
     text: "Pause and soften.",
     guidance: "Rest the hands. Let the shoulders drop. Notice the breath without forcing it."
@@ -51,6 +64,7 @@ const stages = [
   {
     title: "Closing",
     image: "assets/sage/closing.png",
+    music: musicFiles.closing,
     time: 35,
     text: "Complete the practice.",
     guidance: "Bring the hands together. Let the breath slow. Feel the practice settle into the body."
@@ -58,6 +72,7 @@ const stages = [
   {
     title: "Final Bow",
     image: "assets/sage/bow.png",
+    music: musicFiles.closing,
     time: 25,
     text: "Strength and stillness in balance.",
     guidance: "Open palm covers the fist. Bow the head gently while keeping the eyes forward. End with gratitude."
@@ -65,11 +80,11 @@ const stages = [
 ];
 
 function musicButton() {
-  return `<button class="secondary music-toggle" onclick="toggleAmbient()">${ambientOn ? "Music Off" : "Music On"}</button>`;
+  return `<button class="secondary music-toggle" onclick="toggleMusic()">${musicOn ? "Music Off" : "Music On"}</button>`;
 }
 
 function musicStatus() {
-  return `<p class="audio-status ${ambientOn ? "audio-on" : ""}">${ambientOn ? "Ambient sound is on." : "Ambient sound is optional."}</p>`;
+  return `<p class="audio-status ${musicOn ? "audio-on" : ""}">${musicOn ? "Music is on." : "Music is optional."}</p>`;
 }
 
 function setHomeLayout() {
@@ -145,6 +160,10 @@ function runStage(resetTimer = true) {
   if (resetTimer) {
     remaining = s.time;
     currentStageTime = s.time;
+  }
+
+  if (musicOn) {
+    playStageMusic(s.music);
   }
 
   const percent = ((currentStageTime - remaining) / currentStageTime) * 100;
@@ -235,6 +254,10 @@ function complete() {
   view = "complete";
   setHomeLayout();
 
+  if (musicOn) {
+    playStageMusic(musicFiles.closing);
+  }
+
   screen.innerHTML = `
     <h2>Session Complete</h2>
     <img src="assets/sage/bow.png" class="sage-img" alt="Sage final bow">
@@ -267,14 +290,45 @@ function buildPathTree() {
   `;
 }
 
-function toggleAmbient() {
-  if (ambientOn) {
-    stopAmbient();
+function toggleMusic() {
+  musicOn = !musicOn;
+
+  if (musicOn) {
+    if (view === "session" || view === "paused") {
+      playStageMusic(stages[stageIndex].music);
+    } else if (view === "complete") {
+      playStageMusic(musicFiles.closing);
+    } else {
+      playStageMusic(musicFiles.breath);
+    }
   } else {
-    startAmbient();
+    stopMusic();
   }
 
   renderCurrentViewAfterMusicToggle();
+}
+
+function playStageMusic(src) {
+  if (!src) return;
+
+  const currentSrc = audio.getAttribute("data-src");
+
+  if (currentSrc !== src) {
+    audio.pause();
+    audio = new Audio(src);
+    audio.loop = true;
+    audio.volume = 0.55;
+    audio.setAttribute("data-src", src);
+  }
+
+  audio.play().catch(() => {
+    // Some browsers require another user tap before audio starts.
+  });
+}
+
+function stopMusic() {
+  audio.pause();
+  audio.currentTime = 0;
 }
 
 function renderCurrentViewAfterMusicToggle() {
@@ -284,55 +338,6 @@ function renderCurrentViewAfterMusicToggle() {
   else if (view === "paused") pause();
   else if (view === "complete") complete();
   else home();
-}
-
-function startAmbient() {
-  try {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-    const master = audioContext.createGain();
-    master.gain.value = 0.16;
-    master.connect(audioContext.destination);
-
-    const notes = [110, 146.83, 196, 220];
-
-    notes.forEach((freq, index) => {
-      const osc = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-
-      osc.type = index === 0 ? "sine" : "triangle";
-      osc.frequency.value = freq;
-      gain.gain.value = index === 0 ? 0.55 : 0.22;
-
-      osc.connect(gain);
-      gain.connect(master);
-      osc.start();
-
-      audioNodes.push(osc, gain);
-    });
-
-    ambientOn = true;
-  } catch (error) {
-    alert("Ambient sound could not start in this browser.");
-  }
-}
-
-function stopAmbient() {
-  audioNodes.forEach(node => {
-    try {
-      if (node.stop) node.stop();
-      if (node.disconnect) node.disconnect();
-    } catch (error) {}
-  });
-
-  audioNodes = [];
-
-  if (audioContext) {
-    try { audioContext.close(); } catch (error) {}
-  }
-
-  audioContext = null;
-  ambientOn = false;
 }
 
 function format(s) {
