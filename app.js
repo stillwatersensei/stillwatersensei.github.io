@@ -1,8 +1,8 @@
-/* Stillwater Sensei v16.2
+/* Stillwater Sensei v16.3
    Four audio modes + remembered settings + browser voice selector + calmer breathing ripple.
    GitHub Pages friendly. No external dependencies. */
 
-const APP_VERSION = "16.2";
+const APP_VERSION = "16.3";
 const SETTINGS_KEY = "stillwaterAudioSettings.v16";
 
 const defaultSettings = {
@@ -24,6 +24,13 @@ const stages = [
   { id: "bow", title: "Final Bow", eyebrow: "Stage 7", duration: 25, image: "assets/sage/bow.png", music: "assets/audio/closing.mp3", voice: "assets/voice/07-final-bow.mp3", voiceText: "Thank you for practicing with Stillwater. Bow gently to your practice, and carry stillness into the rest of your day.", description: "Bow gently to your practice. Carry stillness with you into the rest of your day." }
 ];
 
+const musicTracks = [
+  "assets/audio/breath.mp3",
+  "assets/audio/flow.mp3",
+  "assets/audio/stillness.mp3",
+  "assets/audio/closing.mp3"
+];
+
 const $ = (id) => document.getElementById(id);
 const els = {
   sageImage: $("sageImage"), stageEyebrow: $("stageEyebrow"), stageTitle: $("stageTitle"), stageDescription: $("stageDescription"), timerText: $("timerText"), progressFill: $("progressFill"),
@@ -39,6 +46,7 @@ let timerId = null;
 let isRunning = false;
 let audioMode = defaultSettings.audioMode;
 let currentMusic = null;
+let currentMusicTrackIndex = 0;
 let currentVoice = null;
 let speechUtterance = null;
 let lastVoiceStageId = null;
@@ -179,15 +187,30 @@ function stopAllAudio() { stopAudio(currentMusic); stopAudio(currentVoice); stop
 
 function startStageAudio(forceVoiceReplay = false) {
   const stage = stages[currentStageIndex];
-  if (wantsMusic()) startMusic(stage.music); else stopAudio(currentMusic);
+  if (wantsMusic()) startMusicFlow(); else stopAudio(currentMusic);
   if (wantsVoice()) startVoice(stage, forceVoiceReplay); else { stopAudio(currentVoice); stopBrowserSpeech(); }
 }
 
-function startMusic(src) {
-  if (!src || !els.musicVolume) return;
-  if (!currentMusic || !currentMusic.src.includes(src)) { stopAudio(currentMusic); currentMusic = makeAudio(src, Number(els.musicVolume.value), true); }
+function startMusicFlow() {
+  if (!els.musicVolume || !musicTracks.length) return;
+  if (!currentMusic) loadMusicTrack(currentMusicTrackIndex);
   currentMusic.volume = Number(els.musicVolume.value);
+  currentMusic.loop = false;
   playAudio(currentMusic).catch(() => { if (els.voiceStatus) els.voiceStatus.textContent = "Music is ready. Tap Begin or the audio mode again if the browser blocks autoplay."; });
+}
+
+function loadMusicTrack(index) {
+  const safeIndex = ((index % musicTracks.length) + musicTracks.length) % musicTracks.length;
+  currentMusicTrackIndex = safeIndex;
+  stopAudio(currentMusic);
+  currentMusic = makeAudio(musicTracks[currentMusicTrackIndex], Number(els.musicVolume?.value ?? defaultSettings.musicVolume), false);
+  currentMusic.addEventListener("ended", playNextMusicTrack);
+}
+
+function playNextMusicTrack() {
+  if (!wantsMusic()) return;
+  loadMusicTrack(currentMusicTrackIndex + 1);
+  startMusicFlow();
 }
 
 function startVoice(stage, forceReplay = false) {

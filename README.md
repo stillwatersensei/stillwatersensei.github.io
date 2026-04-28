@@ -1,11 +1,13 @@
-# Stillwater Sensei v16.2
+# Stillwater Sensei v16.3
 
 Open-source, browser-based Chair Tai Chi + Qigong guided practice led by Sage the Stillwater Sensei, a calm 2D panda guide.
 
-## What changed in v16.2
+## What changed in v16.3
 
 - Added remembered audio preferences using `localStorage`.
 - Default audio mode is now **Play Voice + Music**.
+- Music now flows steadily across practice stages instead of changing automatically when a section changes.
+- Music playlist advances to the next local MP3 only when the current song ends.
 - Added Browser Voice selector to the main app and history page.
 - Default browser voice target is Microsoft Zira when available.
 - Default levels match the preferred test settings: slower voice, raised pitch, medium voice volume, low music volume.
@@ -13,7 +15,7 @@ Open-source, browser-based Chair Tai Chi + Qigong guided practice led by Sage th
 - Added calming Sage breathing scale animation and soft water ripple effect.
 - Tightened layout so the opening screen fits better inside a browser window.
 - Top-left Stillwater logo now links back to the opening screen.
-- Cache-busting bumped to `v=16.2`.
+- Cache-busting bumped to `v=16.3`.
 
 ## Expected audio files
 
@@ -47,9 +49,9 @@ Replace the repository files with this bundle, keeping the same folder structure
 Test with:
 
 ```text
-https://stillwatersensei.github.io/?v=16.2
-https://stillwatersensei.github.io/app.js?v=16.2
-https://stillwatersensei.github.io/style.css?v=16.2
+https://stillwatersensei.github.io/?v=16.3
+https://stillwatersensei.github.io/app.js?v=16.3
+https://stillwatersensei.github.io/style.css?v=16.3
 ```
 
 Created by David Fliesen in 2026.
