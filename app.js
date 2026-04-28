@@ -1,5 +1,8 @@
+const app = document.querySelector(".app");
 const screen = document.getElementById("screen");
+const pathPanel = document.getElementById("pathPanel");
 
+let view = "home";
 let stageIndex = 0;
 let timer = null;
 let remaining = 0;
@@ -61,22 +64,48 @@ const stages = [
   }
 ];
 
+function musicButton() {
+  return `<button class="secondary music-toggle" onclick="toggleAmbient()">${ambientOn ? "Music Off" : "Music On"}</button>`;
+}
+
+function musicStatus() {
+  return `<p class="audio-status ${ambientOn ? "audio-on" : ""}">${ambientOn ? "Ambient sound is on." : "Ambient sound is optional."}</p>`;
+}
+
+function setHomeLayout() {
+  app.classList.add("home-mode");
+  pathPanel.classList.add("hidden");
+  pathPanel.innerHTML = "";
+}
+
+function setSessionLayout() {
+  app.classList.remove("home-mode");
+  pathPanel.classList.remove("hidden");
+  pathPanel.innerHTML = buildPathTree();
+}
+
 function home() {
   clearInterval(timer);
+  view = "home";
+  setHomeLayout();
 
   screen.innerHTML = `
     <h1>🌊 Stillwater</h1>
     <img src="assets/sage/idle.png" class="sage-img" alt="Sage the Stillwater Sensei">
     <p class="prompt">Come as you are.</p>
-    <button onclick="showPlan()">Begin</button>
-    <button class="secondary" onclick="toggleAmbient()">${ambientOn ? "Turn Music Off" : "Turn Music On"}</button>
+    <div class="controls">
+      <button onclick="showPlan()">Begin</button>
+      ${musicButton()}
+    </div>
     <p class="small">Guided by Sage the Stillwater Sensei</p>
-    <p class="audio-status">${ambientOn ? "Ambient sound is on." : "Ambient sound is optional."}</p>
+    ${musicStatus()}
   `;
 }
 
 function showPlan() {
   clearInterval(timer);
+  view = "plan";
+  setHomeLayout();
 
   const list = stages.map(stage => `<li><strong>${stage.title}</strong> · ${stage.time}s</li>`).join("");
 
@@ -85,17 +114,22 @@ function showPlan() {
     <img src="assets/sage/idle.png" class="sage-img" alt="Sage preparing the session">
     <p class="prompt">A short seated practice is ready.</p>
     <ol class="stage-list">${list}</ol>
-    <button onclick="start()">Begin Session</button>
-    <button class="secondary" onclick="home()">Return</button>
+    <div class="controls">
+      <button onclick="start()">Begin Session</button>
+      ${musicButton()}
+      <button class="secondary" onclick="home()">Return</button>
+    </div>
+    ${musicStatus()}
   `;
 }
 
 function start() {
   stageIndex = 0;
-  runStage();
+  view = "session";
+  runStage(true);
 }
 
-function runStage() {
+function runStage(resetTimer = true) {
   clearInterval(timer);
 
   if (stageIndex >= stages.length) {
@@ -103,26 +137,34 @@ function runStage() {
     return;
   }
 
+  view = "session";
+  setSessionLayout();
+
   const s = stages[stageIndex];
-  remaining = s.time;
-  currentStageTime = s.time;
+
+  if (resetTimer) {
+    remaining = s.time;
+    currentStageTime = s.time;
+  }
+
+  const percent = ((currentStageTime - remaining) / currentStageTime) * 100;
 
   screen.innerHTML = `
-    <div class="session-layout">
-      ${buildPathTree()}
-      <div class="session-main">
-        <div class="stage-count">Stage ${stageIndex + 1} of ${stages.length}</div>
-        <h2>${s.title}</h2>
-        <img src="${s.image}" class="sage-img" alt="${s.title}">
-        <p class="prompt">${s.text}</p>
-        <p class="guidance">${s.guidance}</p>
-        <div class="timer" id="t">${format(remaining)}</div>
-        <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
-        <button onclick="pause()">Pause</button>
-        <button class="secondary" onclick="next()">Next</button>
-        <button class="secondary" onclick="home()">End</button>
-      </div>
+    <div class="stage-count">Stage ${stageIndex + 1} of ${stages.length}</div>
+    <h2>${s.title}</h2>
+    <img src="${s.image}" class="sage-img" alt="${s.title}">
+    <p class="prompt">${s.text}</p>
+    <p class="guidance">${s.guidance}</p>
+    <div class="timer" id="t">${format(remaining)}</div>
+    <div class="progress-track"><div class="progress-fill" id="progress" style="width:${percent}%"></div></div>
+    <div class="controls">
+      <button onclick="pause()">Pause</button>
+      <button class="secondary" onclick="back()">Back</button>
+      <button class="secondary" onclick="next()">Forward</button>
+      ${musicButton()}
+      <button class="secondary" onclick="home()">End</button>
     </div>
+    ${musicStatus()}
   `;
 
   timer = setInterval(updateStageTimer, 1000);
@@ -151,6 +193,8 @@ function updateStageTimer() {
 
 function pause() {
   clearInterval(timer);
+  view = "paused";
+  setSessionLayout();
 
   const s = stages[stageIndex];
 
@@ -159,28 +203,47 @@ function pause() {
     <img src="${s.image}" class="sage-img" alt="${s.title}">
     <p class="prompt">Stillness is part of the practice.</p>
     <div class="timer">${format(remaining)}</div>
-    <button onclick="resume()">Resume</button>
-    <button class="secondary" onclick="home()">End Session</button>
+    <div class="controls">
+      <button onclick="resume()">Resume</button>
+      <button class="secondary" onclick="back()">Back</button>
+      <button class="secondary" onclick="next()">Forward</button>
+      ${musicButton()}
+      <button class="secondary" onclick="home()">End Session</button>
+    </div>
+    ${musicStatus()}
   `;
 }
 
 function resume() {
-  runStage();
+  runStage(false);
 }
 
 function next() {
   stageIndex++;
-  runStage();
+  runStage(true);
+}
+
+function back() {
+  if (stageIndex > 0) {
+    stageIndex--;
+  }
+  runStage(true);
 }
 
 function complete() {
   clearInterval(timer);
+  view = "complete";
+  setHomeLayout();
 
   screen.innerHTML = `
     <h2>Session Complete</h2>
     <img src="assets/sage/bow.png" class="sage-img" alt="Sage final bow">
     <p class="prompt">You arrived.<br>You moved.<br>You return.</p>
-    <button onclick="home()">Return Home</button>
+    <div class="controls">
+      <button onclick="home()">Return Home</button>
+      ${musicButton()}
+    </div>
+    ${musicStatus()}
   `;
 }
 
@@ -199,10 +262,8 @@ function buildPathTree() {
   }).join("");
 
   return `
-    <aside class="path-tree">
-      <div class="path-title">Stillwater Path</div>
-      ${items}
-    </aside>
+    <div class="path-title">Stillwater Path</div>
+    ${items}
   `;
 }
 
@@ -212,25 +273,36 @@ function toggleAmbient() {
   } else {
     startAmbient();
   }
-  home();
+
+  renderCurrentViewAfterMusicToggle();
+}
+
+function renderCurrentViewAfterMusicToggle() {
+  if (view === "home") home();
+  else if (view === "plan") showPlan();
+  else if (view === "session") runStage(false);
+  else if (view === "paused") pause();
+  else if (view === "complete") complete();
+  else home();
 }
 
 function startAmbient() {
   try {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
     const master = audioContext.createGain();
-    master.gain.value = 0.035;
+    master.gain.value = 0.16;
     master.connect(audioContext.destination);
 
-    const notes = [110, 146.83, 196];
+    const notes = [110, 146.83, 196, 220];
 
     notes.forEach((freq, index) => {
       const osc = audioContext.createOscillator();
       const gain = audioContext.createGain();
 
-      osc.type = "sine";
+      osc.type = index === 0 ? "sine" : "triangle";
       osc.frequency.value = freq;
-      gain.gain.value = index === 0 ? 0.45 : 0.22;
+      gain.gain.value = index === 0 ? 0.55 : 0.22;
 
       osc.connect(gain);
       gain.connect(master);
