@@ -1,24 +1,46 @@
-# Stillwater v18.1
+# Stillwater v19
 
-Corrected full replacement bundle.
+Full drop-in GitHub Pages bundle.
 
-## Fixes
-- Restores minimal opening screen with idle Sage.
-- Uses idle Sage breathing/ripple animation on the opening screen.
-- Removes broken sprite display strip from the bottom.
-- Uses safe fallback to `assets/sage/idle.png` when stage images are missing.
-- Consolidates layout to fit standard browser windows better.
-- Keeps the right Resources panel colored to balance the left panel.
-- Audio defaults: Voice + Music, Google UK English Male preference, speed 0.95, pitch 0.90, voice 0.78, music 0.22.
+## Main update
 
-## Optional image assets
-Add these later when ready:
-- assets/sage/breath.png
-- assets/sage/lift-flow.png
-- assets/sage/flowing-arms.png
-- assets/sage/gather-qi.png
-- assets/sage/stillness.png
-- assets/sage/closing.png
-- assets/sage/bow.png
+v19 restores the opening/home screen and makes the home Sage use a real image-sequence sprite animation:
 
-If they are missing, the app falls back to idle.png instead of showing a broken image.
+`assets/sage/idle-frames/frame-01.png` through `frame-12.png`
+
+The app swaps those frame images with JavaScript. This is different from the older CSS-only swelling effect.
+
+## Behavior
+
+- Home screen uses animated idle sprite frames.
+- Practice screen uses the stable Sage image fallback.
+- Music is steady and does not change when sections change.
+- Music advances to the next local MP3 when a track ends.
+- After Final Bow completes, music stops, sound mode is set to Silence, and the app returns home.
+- Sound settings are remembered with localStorage.
+- CSS/JS cache busting is set to v=19.
+
+## Audio files expected
+
+Place local music MP3 files here:
+
+- assets/audio/breath.mp3
+- assets/audio/flow.mp3
+- assets/audio/stillness.mp3
+- assets/audio/closing.mp3
+
+Optional future Sage voice files can go here:
+
+- assets/voice/awakening-breath.mp3
+- assets/voice/lift-flow.mp3
+- assets/voice/flowing-arms.mp3
+- assets/voice/gather-qi.mp3
+- assets/voice/stillness.mp3
+- assets/voice/closing.mp3
+- assets/voice/final-bow.mp3
+
+## Upload instructions
+
+Upload the contents of this folder to the root of the GitHub Pages repo:
+
+`stillwatersensei/stillwatersensei.github.io`
