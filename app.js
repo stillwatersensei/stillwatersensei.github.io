@@ -1,4 +1,4 @@
-const VERSION='21';
+const VERSION='22';
 
 const stages=[
   {
@@ -91,6 +91,19 @@ function stopIdleSprite(){
   video.pause();
 }
 
+function startPracticeIdleVideo(){
+  const video=$('practiceIdleVideo');
+  if(!video)return;
+  video.currentTime=0;
+  video.play().catch(()=>{});
+}
+
+function pausePracticeIdleVideo(){
+  const video=$('practiceIdleVideo');
+  if(!video)return;
+  video.pause();
+}
+
 function fillStages(){
   $('stageList').innerHTML=stages.map((s,n)=>`<li data-i="${n}"><span class="num">${n+1}</span>${s.title}</li>`).join('');
   document.querySelectorAll('#stageList li').forEach(li=>li.onclick=()=>goToStage(+li.dataset.i,true));
@@ -120,9 +133,10 @@ function render(){
   $('timer').textContent=formatTime(remaining);
   $('progressBar').style.width=`${100*(1-remaining/stage.time)}%`;
   document.querySelectorAll('#stageList li').forEach((li,n)=>li.classList.toggle('active',n===stageIndex));
-  const img=$('sageImg');
-  img.onerror=()=>{img.onerror=null;img.src=`assets/sage/idle.png?v=${VERSION}`;};
-  img.src=`${stage.img}?v=${VERSION}`;
+  const practiceVideo=$('practiceIdleVideo');
+  if(practiceVideo){
+    practiceVideo.play().catch(()=>{});
+  }
 }
 
 function formatTime(totalSeconds){
@@ -170,12 +184,14 @@ function showHome(soundOff=false){
     saveSettings();
     applySettings();
   }
+  pausePracticeIdleVideo();
   startIdleSprite();
 }
 
 function startPractice(){
   closeMobilePanels();
   stopIdleSprite();
+  startPracticeIdleVideo();
   $('opening').classList.add('hidden');
   $('practice').classList.remove('hidden');
   document.querySelector('.practice-only').classList.remove('hidden');
