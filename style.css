@@ -112,3 +112,21 @@
 @media(max-width:560px){
   .main-sage-stage{width:min(78vw,330px);height:min(78vw,330px);max-height:44svh}
 }
+
+/* v23 calming panda swell restored for MP4 video on all devices */
+.sage-img{
+  transform-origin:center center;
+  animation:sageCalmSwell 7.5s ease-in-out infinite;
+  will-change:transform;
+}
+
+@keyframes sageCalmSwell{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.035)}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .sage-img{
+    animation:none;
+  }
+}
