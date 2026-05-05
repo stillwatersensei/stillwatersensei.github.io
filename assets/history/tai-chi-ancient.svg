@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 720" role="img" aria-label="Ancient parchment style Tai Chi scene">
+  <defs>
+    <linearGradient id="paper" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fff7e5"/><stop offset="1" stop-color="#dde9dc"/></linearGradient>
+  </defs>
+  <rect width="1024" height="720" rx="36" fill="url(#paper)"/>
+  <circle cx="520" cy="310" r="230" fill="none" stroke="#73887f" stroke-width="12" opacity=".22"/>
+  <path d="M142 536 C272 448 410 488 540 395 C665 305 780 330 908 238" fill="none" stroke="#6f827a" stroke-width="10" opacity=".35"/>
+  <path d="M130 588 C300 530 475 558 656 495 C800 445 875 465 935 430" fill="none" stroke="#64786f" stroke-width="15" opacity=".18"/>
+  <g fill="none" stroke="#5d716a" stroke-linecap="round" opacity=".55">
+    <path d="M158 610 C176 505 175 370 160 248" stroke-width="10"/>
+    <path d="M164 332 C220 295 254 258 275 210" stroke-width="7"/>
+    <path d="M158 428 C105 395 76 360 60 312" stroke-width="7"/>
+    <path d="M858 610 C878 506 880 372 860 250" stroke-width="10"/>
+    <path d="M864 334 C920 298 950 260 968 215" stroke-width="7"/>
+    <path d="M860 430 C812 400 782 362 765 320" stroke-width="7"/>
+  </g>
+  <g transform="translate(520 390)" fill="none" stroke="#1a3734" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="0" cy="-160" r="52" fill="#f4ead5"/>
+    <path d="M0 -105 C-28 -58 -16 2 -2 68"/>
+    <path d="M-8 -56 C-96 -20 -140 38 -160 98"/>
+    <path d="M20 -70 C98 -82 150 -122 192 -172"/>
+    <path d="M-4 65 C-85 82 -142 132 -170 205"/>
+    <path d="M12 62 C70 100 120 150 158 212"/>
+  </g>
+  <path d="M324 492 C430 370 582 362 704 235" fill="none" stroke="#cfaa4d" stroke-width="20" opacity=".38" stroke-linecap="round"/>
+  <path d="M336 520 C455 430 600 430 735 350" fill="none" stroke="#3f857d" stroke-width="10" opacity=".28" stroke-linecap="round"/>
+  <text x="512" y="670" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="#244642">Tai Chi</text>
+</svg>

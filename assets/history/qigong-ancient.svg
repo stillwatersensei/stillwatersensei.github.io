@@ -1,1 +1,36 @@
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 720" role="img" aria-label="Ancient parchment style qigong scene">
+  <defs>
+    <linearGradient id="paper" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fff6df"/><stop offset="1" stop-color="#dfe8d5"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="1.2"/></filter>
+  </defs>
+  <rect width="1024" height="720" rx="36" fill="url(#paper)"/>
+  <circle cx="512" cy="300" r="210" fill="none" stroke="#9aa99f" stroke-width="18" opacity=".28"/>
+  <path d="M170 570 C310 470 450 505 610 430 C750 365 845 405 930 330" fill="none" stroke="#90a095" stroke-width="18" opacity=".23"/>
+  <path d="M185 560 C330 500 480 535 630 460 C760 395 850 430 930 370" fill="none" stroke="#667c75" stroke-width="7" opacity=".34"/>
+  <g stroke="#60756e" stroke-linecap="round" opacity=".65">
+    <path d="M180 610 C200 510 205 380 190 250" stroke-width="10"/>
+    <path d="M190 360 C240 330 265 300 282 252" stroke-width="7"/>
+    <path d="M196 420 C146 390 118 355 100 310" stroke-width="7"/>
+    <path d="M828 610 C840 520 835 415 850 285" stroke-width="10"/>
+    <path d="M848 392 C895 360 920 325 935 280" stroke-width="7"/>
+    <path d="M842 455 C795 425 770 390 752 350" stroke-width="7"/>
+  </g>
+  <g fill="#6f827a" opacity=".7">
+    <ellipse cx="280" cy="252" rx="37" ry="12" transform="rotate(-38 280 252)"/>
+    <ellipse cx="100" cy="310" rx="34" ry="11" transform="rotate(35 100 310)"/>
+    <ellipse cx="935" cy="280" rx="35" ry="11" transform="rotate(-38 935 280)"/>
+    <ellipse cx="752" cy="350" rx="32" ry="10" transform="rotate(34 752 350)"/>
+  </g>
+  <g transform="translate(512 372)" fill="none" stroke="#1a3734" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="0" cy="-150" r="54" fill="#f4ead5"/>
+    <path d="M0 -94 C-35 -50 -42 18 -30 88 M0 -94 C35 -50 42 18 30 88"/>
+    <path d="M-18 -40 C-110 -44 -150 -5 -178 38"/>
+    <path d="M18 -40 C110 -44 150 -5 178 38"/>
+    <path d="M-25 82 C-92 120 -118 170 -120 215"/>
+    <path d="M25 82 C92 120 118 170 120 215"/>
+  </g>
+  <g fill="#cfaa4d" opacity=".55" filter="url(#soft)">
+    <circle cx="342" cy="398" r="18"/><circle cx="386" cy="365" r="10"/><circle cx="650" cy="398" r="18"/><circle cx="612" cy="365" r="10"/>
+  </g>
+  <text x="512" y="670" text-anchor="middle" font-family="Georgia, serif" font-size="42" fill="#244642">Qigong</text>
+</svg>
