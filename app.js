@@ -1,4 +1,4 @@
-const VERSION='22';
+const VERSION='24';
 
 const stages=[
   {
@@ -66,6 +66,7 @@ let paused=true;
 let tick=null;
 let musicIndex=0;
 let practiceStarted=false;
+let soundWasPlayingBeforeHide=false;
 
 const musicFiles=['assets/music/breath.mp3','assets/music/flow.mp3','assets/music/stillness.mp3','assets/music/closing.mp3'];
 const musicAudio=new Audio();
@@ -120,7 +121,7 @@ function applySettings(){
   voiceAudio.volume=state.voiceVol;
 
   if(state.mode==='voiceOnly'||state.mode==='silence')musicAudio.pause();
-  else if(!paused&&practiceStarted)playMusic();
+  else if(document.visibilityState!=='hidden')playMusic();
 
   if(state.mode==='musicOnly'||state.mode==='silence')voiceAudio.pause();
 }
@@ -178,14 +179,12 @@ function showHome(soundOff=false){
   $('practice').classList.add('hidden');
   $('opening').classList.remove('hidden');
   document.querySelector('.practice-only').classList.add('hidden');
-  if(soundOff){
-    stopAllSound();
-    state.mode='silence';
-    saveSettings();
-    applySettings();
-  }
+  voiceAudio.pause();
+  voiceAudio.currentTime=0;
+  if(soundOff)musicAudio.pause();
   pausePracticeIdleVideo();
   startIdleSprite();
+  if(!soundOff&&document.visibilityState!=='hidden')playMusic();
 }
 
 function startPractice(){
@@ -223,7 +222,7 @@ function startPractice(){
 
 function completePractice(){
   render();
-  setTimeout(()=>showHome(true),700);
+  setTimeout(()=>showHome(false),700);
 }
 
 function goToStage(index,manual){
@@ -234,7 +233,7 @@ function goToStage(index,manual){
 }
 
 $('beginBtn').onclick=startPractice;
-$('unlockBtn').onclick=()=>{playMusic();playVoiceClip(false);$('unlockBtn').classList.add('hidden');};
+$('unlockBtn').onclick=()=>{playMusic();if(practiceStarted)playVoiceClip(false);$('unlockBtn').classList.add('hidden');};
 $('pauseBtn').onclick=()=>{
   paused=!paused;
   $('pauseBtn').textContent=paused?'Resume':'Pause';
@@ -264,12 +263,10 @@ document.querySelectorAll('.modes button').forEach(b=>b.onclick=()=>{
   state.mode=b.dataset.mode;
   saveSettings();
   applySettings();
-  if(practiceStarted&&!paused){
-    if(state.mode==='silence')stopAllSound();
-    else{
-      playMusic();
-      playVoiceClip(false);
-    }
+  if(state.mode==='silence')stopAllSound();
+  else if(document.visibilityState!=='hidden'){
+    playMusic();
+    if(practiceStarted&&!paused)playVoiceClip(false);
   }
 });
 
@@ -316,14 +313,39 @@ document.querySelectorAll('[data-close-panel]').forEach(btn=>btn.addEventListene
 window.addEventListener('keydown',event=>{if(event.key==='Escape')closeMobilePanels();});
 window.addEventListener('resize',()=>{if(window.innerWidth>1120)closeMobilePanels();});
 
+function pauseAudioForHiddenPage(){
+  soundWasPlayingBeforeHide=!musicAudio.paused||!voiceAudio.paused;
+  musicAudio.pause();
+  voiceAudio.pause();
+  pausePracticeIdleVideo();
+  stopIdleSprite();
+}
+
+function resumeAudioForVisiblePage(){
+  if(practiceStarted)startPracticeIdleVideo();
+  else startIdleSprite();
+  if(!soundWasPlayingBeforeHide)return;
+  if(state.mode!=='voiceOnly'&&state.mode!=='silence')playMusic();
+  if(practiceStarted&&!paused&&state.mode!=='musicOnly'&&state.mode!=='silence')playVoiceClip(false);
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden')pauseAudioForHiddenPage();
+  else resumeAudioForVisiblePage();
+});
+
+window.addEventListener('pagehide',pauseAudioForHiddenPage);
+window.addEventListener('blur',()=>{
+  if(document.visibilityState==='hidden')pauseAudioForHiddenPage();
+});
+
 fillStages();
 applySettings();
 render();
 showHome(false);
 
 window.addEventListener('load',()=>{
-  if(state.mode!=='silence'){
-    musicAudio.volume=state.musicVol;
-    voiceAudio.volume=state.voiceVol;
-  }
+  musicAudio.volume=state.musicVol;
+  voiceAudio.volume=state.voiceVol;
+  if(state.mode==='voiceMusic'||state.mode==='musicOnly')playMusic();
 });
